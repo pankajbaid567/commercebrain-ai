@@ -1,26 +1,18 @@
-.PHONY: up down logs restart backend-test backend-lint frontend-lint format
+.PHONY: up down restart logs clean
 
 up:
 	docker compose up --build
 
 down:
-	docker compose down --remove-orphans
+	docker compose down
+
+restart:
+	docker compose down
+	docker compose up --build
 
 logs:
 	docker compose logs -f
 
-restart:
-	docker compose down && docker compose up --build -d
-
-backend-test:
-	cd backend && python -m pytest
-
-backend-lint:
-	cd backend && ruff check . && black --check . && mypy app
-
-frontend-lint:
-	cd frontend && npm run lint
-
-format:
-	cd backend && black . && ruff check --fix .
-	cd frontend && npm run format
+clean:
+	docker compose down -v
+	docker system prune -f
